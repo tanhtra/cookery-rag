@@ -7,7 +7,7 @@ Using techniques like **Retrieval-Augmented Generation (RAG)** and **hybrid sear
 
 ---
 
-## 1. Project Motivation  
+## Project Motivation  
 
 Cooking is full of concepts, techniques, and rules that beginners can find overwhelming:  
 
@@ -20,7 +20,7 @@ Instead of sifting through articles or multiple recipe blogs, this assistant pro
 
 ---
 
-## 2. Dataset  
+## Dataset  
 
 We’ll use the dataset **Cooking Knowledge Basics** from Kaggle:  
 [Cooking Knowledge Basics Dataset](https://www.kaggle.com/datasets/tiyabk/cooking-knowledge-basics)  
