@@ -18,6 +18,8 @@ Cooking is full of concepts, techniques, and rules that beginners can find overw
 
 Instead of sifting through articles or multiple recipe blogs, this assistant provides **fast, accurate, and context-grounded answers** directly from a curated cooking knowledgebase.  
 
+![Screenshot](img/cookery.png)
+
 ---
 
 ## Dataset  

@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  cookery-app:
+    build: .
+    container_name: cookery_streamlit
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./cookery:/app/cookery
+      - ./requirements.txt:/app/requirements.txt:ro
+    environment:
+      - STREAMLIT_SERVER_ENABLECORS=false
+      - STREAMLIT_SERVER_HEADLESS=true
+      - STREAMLIT_SERVER_PORT=8501
+    restart: unless-stopped
