@@ -36,22 +36,6 @@ This makes it perfect for a **knowledge-augmented Q&A assistant**.
 
 ---
 
-Sources
-
-### Setup
-
-Run Notebook
-```bash
-jupyter notebook
-```
-
-## Code
-- core.ipynb - the primary notebook interface
-- rag_eval.ipynb - notebook containing RAG evaluation logic
-- minsearch.py - in-memory search engine
-- ingest.py - cut down version of core.ipynb use for data ingestion
-- app.py - cut down version of core.ipynb for LLM logic
-
 ### Ingestion
 
 The ingestion script is located in core.ipynb with a copy of it in ingest.py
@@ -94,3 +78,123 @@ The use of gpt-4o was also used:
 - 85% RELEVANT
 - 12% PARTLY_RELEVANT
 - 3% NON_RELEVANT
+
+
+# Running Cookery-RAG with Docker Compose
+
+Follow these steps to build and run the Cookery-RAG Streamlit app in a containerized environment. Users will enter their OpenAI API key directly in the app UI.
+
+## Prerequisites
+
+- Docker & Docker Compose installed  
+- Git installed  
+
+## 1. Clone the Repository
+
+```bash
+git clone https://github.com/tanhtra/cookery-rag.git
+cd cookery-rag
+```
+
+## 2. Verify Project Structure
+
+Ensure you have:
+
+```
+cookery-rag/
+├── cookery/             ← Python package containing appcore.py
+│   └── appcore.py
+├── requirements.txt     ← app dependencies
+├── Dockerfile           ← builds the Streamlit image
+└── docker-compose.yml   ← orchestrates the container
+```
+
+## 3. requirements.txt
+
+Include at least:
+
+```
+streamlit>=1.28.0
+openai
+requests
+python-dotenv
+```
+
+## 4. Dockerfile
+
+```dockerfile
+FROM python:3.11-slim
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY cookery ./cookery
+
+EXPOSE 8501
+
+ENV STREAMLIT_SERVER_ENABLECORS=false \
+    STREAMLIT_SERVER_HEADLESS=true \
+    STREAMLIT_SERVER_PORT=8501 \
+    PYTHONUNBUFFERED=1
+
+CMD ["streamlit", "run", "cookery/appcore.py", "--server.port=8501", "--server.address=0.0.0.0"]
+```
+*Already included in the repo
+
+## 5. docker-compose.yml
+
+```yaml
+version: "3.8"
+
+services:
+  cookery-app:
+    build: .
+    container_name: cookery_streamlit
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./cookery:/app/cookery
+      - ./requirements.txt:/app/requirements.txt:ro
+    restart: unless-stopped
+```
+*Already included in the repo
+
+
+## 6. Build and Run
+
+From the repo root:
+
+```bash
+docker-compose up --build
+```
+
+Streamlit will start inside the container.
+
+## 7. Access the App
+
+Open your browser to:
+
+```
+http://localhost:8501
+```
+
+## 8. Enter Your OpenAI API Key
+
+1. In the app, you’ll see an **OpenAI API Key** input field.  
+2. Paste your OpenAI key (`sk-…`) into the text box.  
+
+## 9. Development Tips
+
+The `cookery` volume mount enables instant reloads when you edit `appcore.py`.  
+After installing new Python packages, update `requirements.txt` and rerun:
+
+  ```bash
+  docker-compose up --build
+  ```
+
+To stop the app:
+
+  ```bash
+  docker-compose down
+  ```
